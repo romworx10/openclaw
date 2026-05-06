@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # Mac Mini access: load OPENCLAW_* from OPERATOR_MANNY_ENV_FILE, then ssh USER@HOST.
+# Bash note: never `source` OPERATOR_MANNY_ENV_FILE — use scripts/shell/openclaw-mini-exec-from-env.sh instead.
 #
 # Bare `operator-manny`: transport remote-bootstrap script as base64 in `ssh -tt … bash -lc` (avoid PTY echo),
 # then remote `exec bash --noprofile --norc -i`; cd + venv + purple PS1 inside operator-manny-remote-login.bash.
