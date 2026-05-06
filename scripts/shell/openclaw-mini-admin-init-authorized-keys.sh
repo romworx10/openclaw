@@ -11,7 +11,7 @@
 #   cat >> ~/.ssh/authorized_keys
 #   # or:  printf '%s\n' 'ssh-ed25519 AAA... comment' >> ~/.ssh/authorized_keys
 #
-# See scripts/shell/openclaw-mac-mini-ssh-stable.md for a stable ssh Host (Tailscale MagicDNS).
+# Tailscale-stable SSH: default operator@100.126.53.107 — full Host block → workspace `.cursor/memory/runbooks/openclaw-mac-mini-ssh-stable.md`.
 #   bash openclaw-mini-admin-init-authorized-keys.sh --append /path/to/collaborator.pub
 
 set -euo pipefail

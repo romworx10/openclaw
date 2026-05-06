@@ -8,8 +8,12 @@
 # then append each collaborator's single-line pubkey to ~/.ssh/authorized_keys.
 #
 # Optional: OPENCLAW_COLLAB_SSH_ALIAS=myhost fills user@host from ~/.ssh/config (ssh -G).
+# Default login target after the key is on the Mini (Tailscale): OPENCLAW_COLLAB_MAC_MINI_SSH_DEFAULT=operator@100.126.53.107
 
 set -u
+
+# Stable Tailscale user@host once your pubkey is in authorized_keys (override per tailnet).
+OPENCLAW_COLLAB_MAC_MINI_SSH_DEFAULT="${OPENCLAW_COLLAB_MAC_MINI_SSH_DEFAULT:-operator@100.126.53.107}"
 
 bold() { printf '\033[1m%s\033[0m' "$1"; }
 dim() { printf '\033[2m%s\033[0m' "$1"; }
@@ -40,22 +44,6 @@ prompt() {
   else
     printf '%s' "$_s"
   fi
-}
-
-# Read until non-empty (no fake hostname default possible).
-prompt_required() {
-  local label="$1"
-  local s
-  while true; do
-    read -r -p "${label}: " s || true
-    s="${s#"${s%%[![:space:]]*}"}"
-    s="${s%"${s##*[![:space:]]}"}"
-    if [[ -n "$s" ]]; then
-      printf '%s' "$s"
-      return 0
-    fi
-    printf '%s\n' "$(dim "Required—ask your admin for the Mac Mini user, IP, or Tailscale hostname.")" >&2
-  done
 }
 
 normalize_dest() {
@@ -161,11 +149,12 @@ prompt_for_ssh_destination() {
   try_apply_ssh_config_alias_defaults
 
   local RAW_DEST DEST
-  if [[ -n "${DEFAULT_SSH_DEST:-}" ]]; then
-    RAW_DEST="$(prompt "Mac Mini SSH target (user@host or hostname only—from admin)" "${DEFAULT_SSH_DEST}")"
-  else
-    RAW_DEST="$(prompt_required "Mac Mini SSH target (user@host or hostname only—from admin)")"
+  if [[ -z "${DEFAULT_SSH_DEST:-}" ]]; then
+    DEFAULT_SSH_DEST="${OPENCLAW_COLLAB_MAC_MINI_SSH_DEFAULT}"
+    printf '%s\n' "$(dim "Default Tailscale Mini: ${DEFAULT_SSH_DEST} — override with OPENCLAW_COLLAB_MAC_MINI_SSH_DEFAULT or OPENCLAW_COLLAB_SSH_ALIAS (~/.ssh/config).")"
   fi
+
+  RAW_DEST="$(prompt "Mac Mini SSH target (user@host or hostname only—from admin)" "${DEFAULT_SSH_DEST}")"
 
   DEST="$(normalize_dest "$RAW_DEST")"
   if [[ "$DEST" != *@* ]]; then
