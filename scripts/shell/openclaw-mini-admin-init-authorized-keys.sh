@@ -11,7 +11,7 @@
 #   cat >> ~/.ssh/authorized_keys
 #   # or:  printf '%s\n' 'ssh-ed25519 AAA... comment' >> ~/.ssh/authorized_keys
 #
-# Optional: append from a .pub file on the mini:
+# See scripts/shell/openclaw-mac-mini-ssh-stable.md for a stable ssh Host (Tailscale MagicDNS).
 #   bash openclaw-mini-admin-init-authorized-keys.sh --append /path/to/collaborator.pub
 
 set -euo pipefail
